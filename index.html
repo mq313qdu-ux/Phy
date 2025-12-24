@@ -1,0 +1,2704 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة QDU للاختبار التفاعلي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .app-container {
+            min-height: 100%;
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .app-container.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+        }
+
+        .app-container.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        .top-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .light-mode .control-btn {
+            background: white;
+            color: #4a90e2;
+        }
+
+        .dark-mode .control-btn {
+            background: #2c3e50;
+            color: #f39c12;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+
+        .platform-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .subject-name {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: inline-block;
+            color: #2c3e50;
+        }
+
+        .student-credit {
+            font-size: 0.95rem;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            font-weight: 600;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .lecture-card:last-child {
+            grid-column: 1 / -1;
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .lecture-card {
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode .lecture-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .lecture-card {
+            background: #2c3e50;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .lecture-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .lecture-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .lecture-number {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .lecture-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 25px;
+        }
+
+        .light-mode .quiz-container {
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .quiz-container {
+            background: #2c3e50;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .quiz-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .light-mode .progress-bar {
+            background: #e0e0e0;
+        }
+
+        .dark-mode .progress-bar {
+            background: #1a1a2e;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+        }
+
+        .question-section {
+            margin: 30px 0;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .translate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .translate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .translation {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            direction: rtl;
+            text-align: right;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .light-mode .translation {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .dark-mode .translation {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #dbeafe;
+            border: 2px solid #60a5fa;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            font-family: 'Poppins', sans-serif;
+            padding: 18px 25px;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .light-mode .option-btn {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .dark-mode .option-btn {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            border-color: #10b981;
+            animation: successPulse 0.5s ease-out;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            color: white;
+            border-color: #ef4444;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(16, 185, 129, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            direction: rtl;
+            text-align: right;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .feedback-box.error {
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .light-mode .feedback-box.error {
+            color: #92400e;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+
+        .dark-mode .feedback-box.error {
+            color: #fef3c7;
+            background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+            border: 2px solid #fbbf24;
+        }
+
+        .next-btn {
+            margin-top: 25px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-chart-wrapper {
+            max-width: 300px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .circular-progress {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: auto;
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke-width: 15;
+        }
+
+        .light-mode .progress-ring-bg {
+            stroke: #e0e0e0;
+        }
+
+        .dark-mode .progress-ring-bg {
+            stroke: #1a1a2e;
+        }
+
+        .progress-ring {
+            fill: none;
+            stroke-width: 15;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 2s ease-out;
+        }
+
+        .progress-ring.fail {
+            stroke: url(#failGradient);
+        }
+
+        .progress-ring.pass {
+            stroke: url(#passGradient);
+        }
+
+        .progress-ring.excellent {
+            stroke: url(#excellentGradient);
+            filter: drop-shadow(0 0 10px rgba(246, 211, 101, 0.6));
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(246, 211, 101, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(246, 211, 101, 0.9));
+            }
+        }
+
+        .results-center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .results-score {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .results-score.fail {
+            color: #eb3349;
+        }
+
+        .results-score.pass {
+            color: #00b09b;
+        }
+
+        .results-score.excellent {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: scoreCount 2s ease-out;
+        }
+
+        @keyframes scoreCount {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .results-label {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            margin-top: 8px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 20px 0;
+            font-family: 'Tajawal', sans-serif;
+            animation: badgeBounce 0.6s ease-out;
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .badge-fail {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(235, 51, 73, 0.4);
+        }
+
+        .badge-pass {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 176, 155, 0.4);
+        }
+
+        .badge-excellent {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(246, 211, 101, 0.5);
+            animation: badgeBounce 0.6s ease-out, shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                box-shadow: 0 5px 20px rgba(246, 211, 101, 0.5);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(246, 211, 101, 0.8);
+            }
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 650px;
+        }
+
+        .stat-card {
+            padding: 25px 20px;
+            border-radius: 18px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode .stat-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .stat-card {
+            background: #1a1a2e;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-card.correct-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+        }
+
+        .dark-mode .stat-card.correct-card {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            border: 2px solid #34d399;
+        }
+
+        .stat-card.wrong-card {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .dark-mode .stat-card.wrong-card {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            border: 2px solid #f87171;
+        }
+
+        .stat-card.total-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #3b82f6;
+        }
+
+        .dark-mode .stat-card.total-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border: 2px solid #60a5fa;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: iconPop 0.5s ease-out;
+        }
+
+        @keyframes iconPop {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 10px 0;
+            line-height: 1;
+            animation: countUp 1.5s ease-out;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card.correct-card .stat-value {
+            color: #059669;
+        }
+
+        .dark-mode .stat-card.correct-card .stat-value {
+            color: #34d399;
+        }
+
+        .stat-card.wrong-card .stat-value {
+            color: #dc2626;
+        }
+
+        .dark-mode .stat-card.wrong-card .stat-value {
+            color: #f87171;
+        }
+
+        .stat-card.total-card .stat-value {
+            color: #2563eb;
+        }
+
+        .dark-mode .stat-card.total-card .stat-value {
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .stat-card.correct-card .stat-label {
+            color: #047857;
+        }
+
+        .dark-mode .stat-card.correct-card .stat-label {
+            color: #a7f3d0;
+        }
+
+        .stat-card.wrong-card .stat-label {
+            color: #b91c1c;
+        }
+
+        .dark-mode .stat-card.wrong-card .stat-label {
+            color: #fecaca;
+        }
+
+        .stat-card.total-card .stat-label {
+            color: #1d4ed8;
+        }
+
+        .dark-mode .stat-card.total-card .stat-label {
+            color: #bfdbfe;
+        }
+
+        .results-message {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 25px 0;
+            font-family: 'Tajawal', sans-serif;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 2px solid #667eea;
+        }
+
+        .light-mode .secondary-btn {
+            color: #667eea;
+        }
+
+        .dark-mode .secondary-btn {
+            color: #a78bfa;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .review-section {
+            margin-top: 40px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .review-question {
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .light-mode .review-question {
+            background: #f8f9fa;
+        }
+
+        .dark-mode .review-question {
+            background: #1a1a2e;
+        }
+
+        .review-question-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .review-answer {
+            font-family: 'Poppins', sans-serif;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .review-answer.user {
+            background: rgba(235, 51, 73, 0.15);
+            color: #eb3349;
+        }
+
+        .review-answer.correct {
+            background: rgba(0, 176, 155, 0.15);
+            color: #00b09b;
+        }
+
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 15px;
+            }
+
+            .lecture-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 15px 20px;
+            }
+
+            .platform-title {
+                font-size: 1.6rem;
+                padding: 15px 20px;
+            }
+
+            .subject-name {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+
+            .student-credit {
+                font-size: 0.85rem;
+                padding: 10px 20px;
+            }
+
+            .top-controls {
+                top: 10px;
+                left: 10px;
+                gap: 8px;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .lecture-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .lecture-card {
+                padding: 25px 20px;
+            }
+
+            .lecture-card:last-child {
+                max-width: 100%;
+            }
+
+            .lecture-icon {
+                font-size: 3rem;
+            }
+
+            .lecture-title {
+                font-size: 1rem;
+            }
+
+            .quiz-container {
+                padding: 20px 15px;
+                border-radius: 20px;
+            }
+
+            .quiz-title {
+                font-size: 1.4rem;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .translate-btn {
+                align-self: flex-start;
+                padding: 10px 18px;
+                font-size: 0.95rem;
+            }
+
+            .translation {
+                font-size: 0.95rem;
+                padding: 12px;
+            }
+
+            .option-btn {
+                padding: 15px 18px;
+                font-size: 0.95rem;
+            }
+
+            .feedback-box {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+
+            .next-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            .results-container {
+                padding: 30px 15px;
+            }
+
+            .results-container h2 {
+                font-size: 1.6rem;
+            }
+
+            .results-chart-wrapper {
+                max-width: 250px;
+            }
+
+            .results-score {
+                font-size: 2.5rem;
+            }
+
+            .results-label {
+                font-size: 0.85rem;
+            }
+
+            .performance-badge {
+                padding: 10px 25px;
+                font-size: 1.05rem;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 20px 15px;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+            }
+
+            .results-message {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .action-btn {
+                width: 100%;
+                padding: 12px 25px;
+            }
+
+            .review-question {
+                padding: 18px;
+            }
+
+            .review-question-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .platform-title {
+                font-size: 1.4rem;
+                padding: 12px 15px;
+            }
+
+            .subject-name {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+
+            .student-credit {
+                font-size: 0.8rem;
+                padding: 8px 15px;
+            }
+
+            .lecture-card {
+                padding: 20px 15px;
+            }
+
+            .lecture-icon {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .lecture-number {
+                font-size: 0.85rem;
+            }
+
+            .lecture-title {
+                font-size: 0.95rem;
+            }
+
+            .quiz-container {
+                padding: 15px 12px;
+            }
+
+            .quiz-title {
+                font-size: 1.2rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .option-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .results-chart-wrapper {
+                max-width: 200px;
+            }
+
+            .results-score {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .lecture-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lecture-card:last-child {
+                grid-column: span 2;
+                max-width: 350px;
+            }
+
+            .results-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container light-mode" id="app">
+   <div class="top-controls"><button class="control-btn" id="themeToggle" title="تبديل الوضع">☀️</button> <button class="control-btn" id="fullscreenToggle" title="ملء الشاشة">⛶</button>
+   </div>
+   <div class="header">
+    <h1 class="platform-title" id="platformTitle">منصة QDU للاختبار التفاعلي</h1>
+    <p class="subject-name" id="subjectName">مادة الفيزياء الشعاعي</p>
+    <p class="student-credit">إعداد الطالب: <span id="studentName">مقتدى الكناني</span></p>
+   </div>
+   <div class="content-wrapper">
+    <div id="lectureSelection">
+     <div class="lecture-grid" id="lectureGrid"></div>
+    </div>
+    <div id="quizSection" class="hidden">
+     <div class="quiz-container">
+      <div class="quiz-header">
+       <h2 class="quiz-title" id="quizTitle"></h2>
+       <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+       </div>
+       <p style="margin-top: 10px; font-size: 1rem;" id="questionCounter"></p>
+      </div>
+      <div class="question-section" id="questionSection"></div>
+     </div>
+    </div>
+    <div id="resultsSection" class="hidden">
+     <div class="quiz-container">
+      <div class="results-container">
+       <h2 style="font-size: 2rem; margin-bottom: 15px; font-family: 'Tajawal', sans-serif;">النتيجة النهائية</h2>
+       <div class="results-chart-wrapper">
+        <svg viewbox="0 0 200 200" class="circular-progress"><defs>
+          <lineargradient id="failGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#eb3349;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#f45c43;stop-opacity:1" />
+          </lineargradient>
+          <lineargradient id="passGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#00b09b;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#96c93d;stop-opacity:1" />
+          </lineargradient>
+          <lineargradient id="excellentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#f6d365;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#fda085;stop-opacity:1" />
+          </lineargradient>
+         </defs> <circle class="progress-ring-bg" cx="100" cy="100" r="85"></circle> <circle class="progress-ring" id="progressRing" cx="100" cy="100" r="85" stroke-dasharray="534" stroke-dashoffset="534"></circle>
+        </svg>
+        <div class="results-center-content">
+         <div class="results-score" id="finalScore">
+          0%
+         </div>
+         <div class="results-label">
+          النسبة المئوية
+         </div>
+        </div>
+       </div>
+       <div class="performance-badge" id="performanceBadge"></div>
+       <div class="results-stats">
+        <div class="stat-card correct-card">
+         <div class="stat-icon">
+          ✅
+         </div>
+         <div class="stat-value" id="correctAnswers">
+          0
+         </div>
+         <div class="stat-label">
+          إجابات صحيحة
+         </div>
+        </div>
+        <div class="stat-card wrong-card">
+         <div class="stat-icon">
+          ❌
+         </div>
+         <div class="stat-value" id="wrongAnswers">
+          0
+         </div>
+         <div class="stat-label">
+          إجابات خاطئة
+         </div>
+        </div>
+        <div class="stat-card total-card">
+         <div class="stat-icon">
+          📊
+         </div>
+         <div class="stat-value" id="totalQuestions">
+          0
+         </div>
+         <div class="stat-label">
+          مجموع الأسئلة
+         </div>
+        </div>
+       </div>
+       <p class="results-message" id="resultsMessage"></p>
+       <div class="action-buttons"><button class="action-btn primary-btn" id="reviewBtn">مراجعة الاختبار</button> <button class="action-btn secondary-btn" id="backToLectures">العودة للمحاضرات</button>
+       </div>
+       <div id="reviewContainer" class="hidden review-section"></div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            platform_title: "منصة QDU للاختبار التفاعلي",
+            subject_name: "مادة الفيزياء الشعاعية",
+            student_name: "مقتدى الكناني"
+        };
+
+        const lectures = [
+            {
+                id: 5,
+                title: "",
+                icon: "5️⃣",
+                questions: [
+ {
+                        question: "The X-ray spectrum is primarily composed of which two components?",
+                        translation: "طيف الأشعة السينية يتكون بشكل أساسي من يا مكونين؟",
+                        options: ["Scatter and absorption", "Bremsstrahlung and characteristic radiation", "Heat and light", "Protons and neutrons"],
+                        correct: 1,
+                        explanation: "يتكون من إشعاع الكبح (Bremsstrahlung) والإشعاع المميز (Characteristic)."
+                    },
+                    {
+                        question: "Increasing the kVp setting will have what effect on the maximum photon energy?",
+                        translation: "زيادة الـ kVp شنو تأثيرها على أقصى طاقة للفوتون؟",
+                        options: ["It decreases the maximum energy", "It has no effect on energy", "It increases the maximum energy", "It only affects the number"],
+                        correct: 2,
+                        explanation: "كلما نزيد الـ kVp، تزيد الطاقة القصوى للفوتونات المنتجة."
+                    },
+                    {
+                        question: "Numerically, the maximum photon energy in keV is equal to:",
+                        translation: "رقمياً، طاقة الفوتون القصوى بالـ keV تساوي قيمة شنو؟",
+                        options: ["The tube current (mA)", "The exposure time (s)", "The filtration thickness", "The kVp setting"],
+                        correct: 3,
+                        explanation: "طاقة الفوتون القصوى تساوي دائماً قيمة الـ kVp اللي اختاريناها بالجهاز."
+                    },
+                    {
+                        question: "What happens to the average photon energy when the kVp is increased?",
+                        translation: "شنو يصير لمعدل (متوسط) طاقة الفوتون من نزيد الـ kVp؟",
+                        options: ["It shifts to lower energies", "It results in a higher average energy", "It remains constant", "It becomes zero"],
+                        correct: 1,
+                        explanation: "زيادة الـ kVp تخلي معدل طاقة الحزمة كلها يرتفع."
+                    },
+                    {
+                        question: "Which material is typically used for the anode in general X-ray tubes?",
+                        translation: "يا مادة نستخدمها عادةً لصناعة الأنود بأنابيب الأشعة العامة؟",
+                        options: ["Copper", "Molybdenum", "Tungsten", "Rhodium"],
+                        correct: 2,
+                        explanation: "التنغستن (Tungsten) هو المادة الأساسية بسبب درجة انصهاره العالية وعدده الذري."
+                    },
+                    {
+                        question: "In mammography, which target materials are sometimes used instead of tungsten?",
+                        translation: "بجهاز الماموكرافي، يا مواد نستخدمها كهدف (Target) بدل التنغستن؟",
+                        options: ["Aluminum and Lead", "Molybdenum or Rhodium", "Gold and Silver", "Iron and Copper"],
+                        correct: 1,
+                        explanation: "نستخدم الموليبدينوم أو الروديوم لإنتاج أشعة ناعمة تناسب فحص الثدي."
+                    },
+                    {
+                        question: "What is the primary purpose of filtration in an X-ray tube?",
+                        translation: "شنو الغرض الأساسي من استخدام الفلتر (Filtration)؟",
+                        options: ["To increase low-energy photons", "To remove lower-energy (soft) photons", "To decrease average energy", "To cool the anode"],
+                        correct: 1,
+                        explanation: "الفلتر يشيل الفوتونات الضعيفة (الناعمة) اللي ما تخترق الجسم بس تزيد الجرعة الإشعاعية."
+                    },
+
+                    
+
+                    {
+                        question: "Which of the following is considered 'inherent' filtration?",
+                        translation: "يا هو من ذني يعتبر ترشيح 'ذاتي' (Inherent)؟",
+                        options: ["Aluminum sheets", "Copper filters", "Glass envelope and oil", "Collimator blades"],
+                        correct: 2,
+                        explanation: "الترشيح الذاتي يجي من أجزاء الأنبوبة نفسها مثل الغلاف الزجاجي والزيت."
+                    },
+                    {
+                        question: "The process of 'Hardening the Beam' through filtration results in:",
+                        translation: "عملية 'تصليد الحزمة' عن طريق الفلترة تؤدي إلى شنو؟",
+                        options: ["Increasing the average photon energy", "Decreasing the average photon energy", "Increasing skin dose", "Producing more soft X-rays"],
+                        correct: 0,
+                        explanation: "تصليد الحزمة يعني نرفع معدل طاقتها ونخليها أكثر قدرة على الاختراق."
+                    },
+                    {
+                        question: "Filtration reduces the overall X-ray output because:",
+                        translation: "الفلترة تقلل كمية الأشعة الكلية الخارجة لأنو:",
+                        options: ["It increases kVp", "Some photons are absorbed by the filter", "It increases mA", "It focuses the beam"],
+                        correct: 1,
+                        explanation: "مادة الفلتر تمتص جزء من الفوتونات، فتقل الكمية الكلية."
+                    },
+                    {
+                        question: "How does filtration affect the shape of the X-ray spectrum?",
+                        translation: "شلون تأثر الفلترة على شكل طيف الأشعة؟",
+                        options: ["Shifts to the left", "Increases lower-energy amplitude", "Shifts to the right (higher energies)", "No effect"],
+                        correct: 2,
+                        explanation: "تزحف الطيف لليمنة، يعني باتجاه الطاقات العالية."
+                    },
+                    {
+                        question: "Which generator type provides nearly constant voltage and most efficient production?",
+                        translation: "يا نوع مولدات يعطي فولتية ثابتة تقريباً وإنتاج أشعة كفوء؟",
+                        options: ["Single-phase", "Three-phase", "High-frequency generator", "Low-frequency"],
+                        correct: 2,
+                        explanation: "المولدات ذات التردد العالي (High-frequency) هي الأفضل والأكثر كفاءة حالياً."
+                    },
+                    {
+                        question: "X-ray Quantity is defined as:",
+                        translation: "شنو المقصود بـ 'كمية' الأشعة (Quantity)؟",
+                        options: ["Energy of a single photon", "Total number of photons in the beam", "Speed of photons", "Penetrability"],
+                        correct: 1,
+                        explanation: "الكمية تعني العدد الكلي للفوتونات الموجودة بالحزمة."
+                    },
+                    {
+                        question: "The quantity of X-rays is directly proportional to:",
+                        translation: "كمية الأشعة تتناسب طردياً ويه شنو؟",
+                        options: ["Filtration thickness", "Distance", "Tube current (mA) and time (s)", "Atomic number"],
+                        correct: 2,
+                        explanation: "تتناسب ويه تيار الأنبوبة (mA) ووقت التعريض (s)، يعني الـ mAs."
+                    },
+                    {
+                        question: "X-ray Intensity depends on:",
+                        translation: "شدة الأشعة (Intensity) تعتمد على شنو؟",
+                        options: ["Only number", "Only energy", "Both number and energy", "Focal spot size"],
+                        correct: 2,
+                        explanation: "الشدة تعتمد على عدد الفوتونات وطاقتها سوية."
+                    },
+                    {
+                        question: "According to the Inverse Square Law, if we double the distance, the intensity is:",
+                        translation: "حسب قانون التربيع العكسي، إذا ضاعفنا المسافة مرتين، الشدة شكد تصير؟",
+                        options: ["Doubled", "Reduced to 1/2", "Reduced to 1/4", "Quadrupled"],
+                        correct: 2,
+                        explanation: "تتضاعف المسافة يعني الشدة تقل لأربع مرات (الربع)."
+                    },
+                    {
+                        question: "X-ray Quality refers to:",
+                        translation: "جودة الأشعة (Quality) تشير إلى شنو؟",
+                        options: ["Total number", "The penetrability of the beam", "Brightness", "Exposure time"],
+                        correct: 1,
+                        explanation: "الجودة تعني قدرة الأشعة على الاختراق (Penetrability)."
+                    },
+                    {
+                        question: "Beam quality is primarily determined by:",
+                        translation: "جودة الحزمة تتحدد بشكل أساسي عن طريق شنو؟",
+                        options: ["Tube current (mA)", "Average photon energy", "Exposure time (s)", "Room size"],
+                        correct: 1,
+                        explanation: "تتحدد بمعدل طاقة الفوتونات؛ كلما زادت الطاقة زادت الجودة."
+                    },
+                    {
+                        question: "A 'Hard beam' is characterized by:",
+                        translation: "الحزمة 'الصلبة' (Hard beam) بشنو تتميز؟",
+                        options: ["Low energy", "Quick absorption", "Higher average energy and more penetration", "Only characteristic"],
+                        correct: 2,
+                        explanation: "تتميز بطاقتها العالية وقدرتها الكبيرة على اختراق الأنسجة."
+                    },
+                    {
+                        question: "The continuous spectrum component of the photon range is:",
+                        translation: "المكون المستمر (Continuous) بطيف الأشعة هو إشعاع شنو؟",
+                        options: ["Characteristic radiation", "Bremsstrahlung radiation", "Photoelectric effect", "Compton scattering"],
+                        correct: 1,
+                        explanation: "إشعاع الكبح (Bremsstrahlung) هو اللي يسوي الطيف المستمر."
+                    },
+                    {
+                        question: "The 'Half-Value Layer' (HVL) is the thickness required to:",
+                        translation: "طبقة القيمة النصفية (HVL) هي السمك المطلوب لـ:",
+                        options: ["Double intensity", "Reduce beam intensity to half", "Stop all photons", "Increase average energy"],
+                        correct: 1,
+                        explanation: "هي سمك المادة اللي يقلل شدة الأشعة للنص."
+                    },
+                    {
+                        question: "A higher HVL (Half-Value Layer) indicates:",
+                        translation: "من تكون قيمة الـ HVL عالية، هذا معناه شنو؟",
+                        options: ["Softer beam", "More penetrating beam", "Lower energy", "Less filtration"],
+                        correct: 1,
+                        explanation: "معناها الحزمة قوية ولها قدرة اختراق عالية."
+                    },
+                    
+
+                    {
+                        question: "The linear attenuation coefficient (μ) quantifies:",
+                        translation: "معامل الوهن الخطي (μ) يقيس شنو؟",
+                        options: ["Speed of photons", "Probability of attenuation per unit distance", "Heat capacity", "Number of electrons"],
+                        correct: 1,
+                        explanation: "يقيس احتمالية وهن الأشعة (امتصاصها أو تشتتها) لكل وحدة مسافة بالمادة."
+                    },
+                    {
+                        question: "The exponential law for transmitted intensity is:",
+                        translation: "يا هو القانون الأسي للأشعة النافذة؟",
+                        options: ["I = I₀ + x", "I = I₀ · e^(-μx)", "I = I₀ / μ", "I = μ · x²"],
+                        correct: 1,
+                        explanation: "هذا هو قانون الوهن الأسي المشهور."
+                    },
+                    {
+                        question: "Which interaction dominates at low photon energies (20-80 keV)?",
+                        translation: "يا تفاعل يسيطر بالطاقات الواطئة (مثل التشخيص بالأشعة)؟",
+                        options: ["Compton scattering", "Coherent scattering", "Photoelectric effect", "Pair production"],
+                        correct: 2,
+                        explanation: "تأثير الكهروضوئي (Photoelectric) هو المسيطر بهاي الطاقات."
+                    },
+                    {
+                        question: "In the Photoelectric Effect, the photon is:",
+                        translation: "بتأثير الكهروضوئي، الفوتون شنو يصير بيه؟",
+                        options: ["Deflected", "Completely absorbed by the atom", "Transmitted", "Converted to proton"],
+                        correct: 1,
+                        explanation: "يتم امتصاص الفوتون بالكامل وتنتقل طاقته لإلكترون المادة."
+                    },
+                    {
+                        question: "The Photoelectric Effect strongly depends on the:",
+                        translation: "التأثير الكهروضوئي يعتمد بقوة على شنو؟",
+                        options: ["Electron density", "Atomic number (Z³)", "Velocity", "Exposure time"],
+                        correct: 1,
+                        explanation: "يعتمد على مكعب العدد الذري للمادة (Z³)، ولهذا العظم يمتص أكثر من اللحم."
+                    },
+                    {
+                        question: "Which interaction reduces image contrast by producing scatter?",
+                        translation: "يا تفاعل يقلل تباين الصورة لأن يسوي تشتت (Scatter)؟",
+                        options: ["Photoelectric effect", "Coherent scattering", "Compton scattering", "Filtration"],
+                        correct: 2,
+                        explanation: "تشتت كومبتون (Compton) هو المسؤول عن الـ Scatter اللي يخرب وضوح الصورة."
+                    },
+                    {
+                        question: "Compton Scattering involves an interaction with:",
+                        translation: "تشتت كومبتون يصير نتيجة التفاعل ويه يا إلكترون؟",
+                        options: ["Inner-shell electron", "Outer-shell electron", "The nucleus", "A positron"],
+                        correct: 1,
+                        explanation: "يصير ويه إلكترونات المدارات الخارجية (الضعيفة الارتباط)."
+                    },
+                    {
+                        question: "Coherent (Rayleigh) scattering occurs at:",
+                        translation: "التشتت المترابط (Coherent) شوكت يصير؟",
+                        options: ["Very high energies", "Medium energies", "Very low energies (<30 keV)", "All levels"],
+                        correct: 2,
+                        explanation: "يصير بالطاقات كلش واطئة وعادةً ما يفيدنا بالتصوير."
+                    },
+                    {
+                        question: "As photon energy higher, the linear attenuation coefficient (μ):",
+                        translation: "كلما تزيد طاقة الفوتون، معامل الوهن الخطي (μ) ش يصير بيه؟",
+                        options: ["Increases", "Decreases", "Infinite", "Constant"],
+                        correct: 1,
+                        explanation: "كلما زادت الطاقة، قلت احتمالية الوهن لأن الأشعة تخترق أكثر."
+                    },
+                    {
+                        question: "Mass Attenuation Coefficient is defined as:",
+                        translation: "معامل الوهن الكتلي شنو تعريفه؟",
+                        options: ["μ + ρ", "μ / ρ", "μ · ρ", "ρ / μ"],
+                        correct: 1,
+                        explanation: "هو معامل الوهن الخطي مقسوم على كثافة المادة."
+                    },
+                    {
+                        question: "The unit for the Mass Attenuation Coefficient is:",
+                        translation: "وحدة قياس معامل الوهن الكتلي هي:",
+                        options: ["cm⁻¹", "keV", "cm²/g", "mAs"],
+                        correct: 2,
+                        explanation: "وحدته هي cm²/g."
+                    },
+                    {
+                        question: "Why is the Mass Attenuation Coefficient useful?",
+                        translation: "ليش معامل الوهن الكتلي مفيد؟",
+                        options: ["Increases dose", "Independent of density", "Only for bone", "Eliminates kVp"],
+                        correct: 1,
+                        explanation: "لأن يسمح بمقارنة امتصاص المواد بغض النظر عن حالتها الفيزيائية أو كثافتها."
+                    }
+      
+                ]
+            },
+            {
+                id: 6,
+                title: "",
+                icon: "6️⃣",
+                questions: [
+                   {
+                        question: "In the Photoelectric Effect, the X-ray photon transfers all its energy to:",
+                        translation: "بتأثير الكهروضوئي، فوتون الأشعة ينطي كل طاقته لـ:",
+                        options: ["An outer-shell electron", "An inner-shell electron", "The nucleus", "A positron"],
+                        correct: 1,
+                        explanation: "بالتأثير الكهروضوئي، الفوتون ينطي طاقته لإلكترون المدار الداخلي (Inner-shell)."
+                    },
+                    {
+                        question: "The result of the Photoelectric Effect is:",
+                        translation: "شنو نتيجة التأثير الكهروضوئي؟",
+                        options: ["Partial absorption", "Complete absorption of the photon", "No energy loss", "Creation of a neutron"],
+                        correct: 1,
+                        explanation: "النتيجة هي امتصاص كامل (Complete absorption) للفوتون من قبل الذرة."
+                    },
+                    {
+                        question: "The Photoelectric Effect is dominant at which energy range?",
+                        translation: "التأثير الكهروضوئي يكون هو المسيطر بيا مدى من الطاقة؟",
+                        options: ["Low energies (20–50 keV)", "Medium energies (50–150 keV)", "High energies (>1.02 MeV)", "Very high energies"],
+                        correct: 0,
+                        explanation: "يكون مسيطر بالطاقات الواطئة، وهذا اللي يفيدنا بتصوير العظام."
+                    },
+                    {
+                        question: "Which interaction is responsible for high contrast in diagnostic imaging?",
+                        translation: "يا تفاعل هو المسؤول عن التباين العالي (فرق العظم عن اللحم) بالصور؟",
+                        options: ["Compton Scattering", "Photoelectric Effect", "Coherent Scattering", "Pair Production"],
+                        correct: 1,
+                        explanation: "تأثير الكهروضوئي هو اللي يسوي التباين العالي بالصورة التشخيصية."
+                    },
+                    {
+                        question: "In Compton Scattering, the photon interacts with:",
+                        translation: "بتشتت كومبتون، الفوتون يتفاعل ويه شنو؟",
+                        options: ["An outer-shell electron", "An inner-shell electron", "The whole atom", "The nucleus"],
+                        correct: 0,
+                        explanation: "كومبتون يتفاعل ويه إلكترون المدار الخارجي (الضعيف)."
+                    },
+                    {
+                        question: "What happens to the photon after a Compton Scattering interaction?",
+                        translation: "شنو يصير للفوتون بعد ما يسوي تشتت كومبتون؟",
+                        options: ["Disappears completely", "Converts into matter", "Continues with reduced energy and altered direction", "Energy remains unchanged"],
+                        correct: 2,
+                        explanation: "يستمر بحركته بس طاقته تقل واتجاهه يتغير (يتشتت)."
+                    },
+                    {
+                        question: "Compton Scattering depends mainly on:",
+                        translation: "تشتت كومبتون يعتمد بشكل أساسي على شنو؟",
+                        options: ["Atomic number (Z)", "Electron density", "Photon wavelength only", "Protons in the nucleus"],
+                        correct: 1,
+                        explanation: "يعتمد على الكثافة الإلكترونية للمادة مو على العدد الذري."
+                    },
+                    {
+                        question: "Which interaction is the major contributor to image noise and radiation dose (50–150 keV)?",
+                        translation: "يا تفاعل هو المسؤول الأكبر عن الضوضاء (Noise) والجرعة الإشعاعية بالطاقات المتوسطة؟",
+                        options: ["Compton Scattering", "Photoelectric Effect", "Pair Production", "Photonuclear Reactions"],
+                        correct: 0,
+                        explanation: "تشتت كومبتون هو اللي يسوي الـ Scatter ويخرب وضوح الصورة."
+                    },
+                    {
+                        question: "In Coherent (Rayleigh) Scattering, the photon interacts with:",
+                        translation: "بتشتت الـ Coherent، الفوتون يتفاعل ويه شنو؟",
+                        options: ["A free electron", "The whole atom", "The nucleus", "An inner-shell electron"],
+                        correct: 1,
+                        explanation: "يتفاعل ويه الذرة ككل (The whole atom)."
+                    },
+                    {
+                        question: "What is a characteristic of Coherent Scattering?",
+                        translation: "شنو هي ميزة تشتت الـ Coherent؟",
+                        options: ["It causes ionization", "Maximum energy loss", "Photon changes direction without energy loss", "Occurs at very high energies"],
+                        correct: 2,
+                        explanation: "الفوتون بس يغير اتجاهه بدون ما يخسر طاقة وما يسوي تأين."
+                    },
+                    {
+                        question: "Pair Production occurs only at energies higher than:",
+                        translation: "إنتاج الزوج (Pair Production) يصير بس بالطاقات اللي أعلى من:",
+                        options: ["30 keV", "150 keV", "1.02 MeV", "10 MeV"],
+                        correct: 2,
+                        explanation: "يحتاج طاقة عالية جداً، على الأقل 1.02 MeV."
+                    },
+                    {
+                        question: "In Pair Production, the photon energy is converted into:",
+                        translation: "بإنتاج الزوج، طاقة الفوتون تتحول إلى شنو؟",
+                        options: ["Heat", "Matter (electron – positron pair)", "Visible light", "Scattered photons"],
+                        correct: 1,
+                        explanation: "تتحول المادة (إلكترون وبوزترون)."
+                    },
+                    {
+                        question: "Photonuclear Reactions occur at very high energies and involve the ejection of:",
+                        translation: "التفاعلات الضوئية النووية تصير بالطاقات العالية وتؤدي لطرد شنو؟",
+                        options: ["Inner-shell electrons", "Outer-shell electrons", "Nucleons (protons/neutrons)", "Positrons"],
+                        correct: 2,
+                        explanation: "تؤدي لطرد مكونات النواة (بروتونات أو نيوترونات)."
+                    },
+                    {
+                        question: "In Compton Scattering, the incident photon collides with:",
+                        translation: "بتشتت كومبتون، الفوتون الساقط يصطدم بـ:",
+                        options: ["A tightly bound electron", "A loosely bound electron", "The nucleus", "A neutron"],
+                        correct: 1,
+                        explanation: "يصطدم بإلكترون ضعيف الارتباط (Loosely bound)."
+                    },
+                    {
+                        question: "The energy lost by a photon in Compton scattering is determined by:",
+                        translation: "الطاقة اللي يخسرها الفوتون بكومبتون تتحدد عن طريق شنو؟",
+                        options: ["Atomic number", "Exposure time", "The scattering angle (θ)", "Filtration type"],
+                        correct: 2,
+                        explanation: "تعتمد على زاوية التشتت؛ كلما مالت الزاوية أكثر خسر طاقة أكثر."
+                    },
+                    {
+                        question: "At which scattering angle (θ) does the photon lose the maximum energy?",
+                        translation: "بيا زاوية تشتت يخسر الفوتون أكبر قدر من طاقته؟",
+                        options: ["Small angles (θ ≈ 0°)", "45°", "90°", "Large angles (θ ≈ 180°)"],
+                        correct: 3,
+                        explanation: "بالزوايا الكبيرة (مثل 180 درجة - الارتداد للخلف) يخسر الفوتون أقصى طاقة."
+                    },
+                    {
+                        question: "At higher photon energies, the distribution of scattered photons becomes:",
+                        translation: "بالطاقات العالية، توزيع الفوتونات المتشتتة شلون يصير؟",
+                        options: ["Uniform", "Strongly forward-peaked", "Mostly backward-peaked", "Zero"],
+                        correct: 1,
+                        explanation: "تتجه الفوتونات المتشتتة للأمام بقوة (Forward-peaked)."
+                    },
+                    {
+                        question: "Why is large-angle scatter problematic in radiography?",
+                        translation: "ليش التشتت بالزوايا الكبيرة يسبب مشكلة بالتصوير؟",
+                        options: ["Increases contrast", "Contributes to noise and reduces contrast", "Reduces patient dose", "Speeds up exposure"],
+                        correct: 1,
+                        explanation: "لأن يسوي ضوضاء (Noise) ويقلل تباين الصورة."
+                    },
+                    {
+                        question: "Knowledge of angular distribution in scattering is helpful for:",
+                        translation: "معرفة توزيع زوايا التشتت تفيدنا بشنو؟",
+                        options: ["Positioning protective barriers", "Increasing mA", "Selecting anode material", "Reducing kVp"],
+                        correct: 0,
+                        explanation: "تفيدنا بتصميم الحماية والدروع الإشعاعية (Shielding design)."
+                    },
+                    {
+                        question: "Unmodified scatter is defined as:",
+                        translation: "التشتت غير المعدل (Unmodified) يعرف بأنه تفاعل:",
+                        options: ["An inelastic interaction", "An elastic interaction", "An ionizing interaction", "An absorption process"],
+                        correct: 1,
+                        explanation: "يعتبر تفاعل مرن (Elastic) لأن ماكو خسارة بالطاقة."
+                    },
+                    {
+                        question: "Which type of unmodified scatter involves a photon interacting with a free electron?",
+                        translation: "يا نوع من التشتت غير المعدل يتفاعل بيه الفوتون ويه إلكترون حر؟",
+                        options: ["Rayleigh scattering", "Thomson scattering", "Compton scattering", "Photoelectric effect"],
+                        correct: 1,
+                        explanation: "تشتت طومسون (Thomson) هو اللي يصير ويه إلكترون حر واحد."
+                    },
+                    {
+                        question: "Unmodified scatter occurs typically at energies below:",
+                        translation: "التشتت غير المعدل يصير عادةً بالطاقات اللي أقل من:",
+                        options: ["1.02 MeV", "150 keV", "50 keV", "30 keV"],
+                        correct: 3,
+                        explanation: "يصير بالطاقات الواطئة جداً، غالباً أقل من 30 keV."
+                    },
+                    {
+                        question: "In Rayleigh scattering, the atom's electrons are excited to:",
+                        translation: "بتشتت رايلي (Rayleigh)، إلكترونات الذرة تتهيج حتى:",
+                        options: ["Be ejected", "Vibrate momentarily and re-emit the photon", "Create a positron", "Move to higher shell"],
+                        correct: 1,
+                        explanation: "تهتز لحظياً وترجع تبعث نفس الفوتون بنفس الطاقة بس باتجاه مختلف."
+                    },
+                    {
+                        question: "A key characteristic of unmodified scatter is that:",
+                        translation: "ميزة أساسية للتشتت غير المعدل هي:",
+                        options: ["No ionization occurs", "Wavelength changes", "Provides most info", "Only in bone"],
+                        correct: 0,
+                        explanation: "ما يسبب أي تأين للذرة (No ionization)."
+                    },
+                    {
+                        question: "The clinical importance of Coherent (unmodified) scatter is that it:",
+                        translation: "الأهمية السريرية لتشتت الـ Coherent هي أنه:",
+                        options: ["Increases dose significantly", "Plays a minor role and slightly reduces contrast", "Main interaction in CT", "Eliminates grids"],
+                        correct: 1,
+                        explanation: "دوره بسيط جداً وبالتأثير القليل يقلل تباين الصورة."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "",
+                icon: "7️⃣",
+                questions: [
+                  {
+                        question: "Differential absorption is defined as the variation in how different tissues:",
+                        translation: "شنو يعني الامتصاص التفاضلي؟ هو الاختلاف بشنو بين الأنسجة؟",
+                        options: ["Reflect visible light", "Attenuate (absorb or scatter) X-ray photons", "Conduct electricity", "Store thermal energy"],
+                        correct: 1,
+                        explanation: "هو الاختلاف بطريقة توهين (امتصاص أو تشتيت) الأنسجة للفوتونات."
+                    },
+                    {
+                        question: "The primary result of differential absorption in radiographic images is:",
+                        translation: "شنو النتيجة الأساسية للامتصاص التفاضلي بالصور الشعاعية؟",
+                        options: ["Reducing exposure time", "Producing image contrast", "Increasing focal spot size", "Cooling the X-ray tube"],
+                        correct: 1,
+                        explanation: "النتيجة هي إنتاج التباين (Contrast) اللي يخلينا نشوف الفرق بين الأجزاء."
+                    },
+                    {
+                        question: "In a radiograph, tissues with high absorption appear:",
+                        translation: "بالأشعة، الأنسجة اللي تمتص هواية تظهر بيا لون؟",
+                        options: ["Light (White)", "Dark (Black)", "Transparent", "Invisible"],
+                        correct: 0,
+                        explanation: "الأنسجة اللي امتصاصها عالي تطلع باللون الأبيض (فاتح)."
+                    },
+
+                    // ثانياً: الاعتماد على العدد الذري (Dependence on Atomic Number - Z)
+                    {
+                        question: "The probability of photoelectric absorption increases strongly with:",
+                        translation: "احتمالية الامتصاص الكهروضوئي تزيد بقوة ويه شنو؟",
+                        options: ["Exposure time", "Room temperature", "Atomic number (Z)", "Distance"],
+                        correct: 2,
+                        explanation: "تزيد بقوة كلما زاد العدد الذري (Z) للمادة."
+                    },
+                    {
+                        question: "Bone appears white on an X-ray because it contains calcium, which has a:",
+                        translation: "العظم يطلع أبيض بالأشعة لأن بيه كالسيوم، والكالسيوم يتميز بـ:",
+                        options: ["Low atomic number", "High atomic number", "Low mass density", "Gaseous state"],
+                        correct: 1,
+                        explanation: "الكالسيوم عنده عدد ذري (Z) عالي مقارنة باللحم."
+                    },
+                    {
+                        question: "Contrast agents like Iodine and Barium appear bright white due to their:",
+                        translation: "صبغات التباين مثل اليود والباريوم تطلع بيضة كلش بسبب:",
+                        options: ["Low density", "Transparency", "Very high atomic number", "Magnetic properties"],
+                        correct: 2,
+                        explanation: "لأن عددها الذري كلش عالي، فتمتص الأشعة بقوة."
+                    },
+                    {
+                        question: "Soft tissues (carbon, oxygen, hydrogen) appear gray because they have:",
+                        translation: "الأنسجة الرخوة (مثل العضلات) تطلع رمادية لأن عدها:",
+                        options: ["Low atomic number (Z)", "High calcium content", "Metallic properties", "High density like lead"],
+                        correct: 0,
+                        explanation: "عدها عدد ذري واطئ، فتمتص كمية قليلة من الأشعة."
+                    },
+                    {
+                        question: "Which of the following appears 'Dark Gray' due to its low Z and density?",
+                        translation: "يا هو من ذني يطلع رمادي طوخ (Dark Gray) بسبب قلّة العدد الذري والكثافة؟",
+                        options: ["Bone", "Fat", "Metal implants", "Contrast media"],
+                        correct: 1,
+                        explanation: "الشحم (Fat) يطلع رمادي طوخ لأن امتصاصه للأشعة ضعيف."
+                    },
+                    {
+                        question: "Air appears black in radiographs because it has:",
+                        translation: "الهواء يطلع أسود بالأشعة لأن عنده:",
+                        options: ["Very low Z and density", "High absorption properties", "High atomic number", "Crystalline structure"],
+                        correct: 0,
+                        explanation: "الهواء كثافته ووزنه الذري كلش قليل، فالأشعة تعبر منه بسهولة."
+                    },
+
+                    // ثالثاً: الاعتماد على كثافة الكتلة (Dependence on Mass Density - ρ)
+                    {
+                        question: "The relationship between X-ray absorption and mass density is:",
+                        translation: "العلاقة بين امتصاص الأشعة وكثافة الكتلة هي:",
+                        options: ["Directly proportional", "Inversely proportional", "Exponentially decreasing", "No relationship"],
+                        correct: 0,
+                        explanation: "علاقة طردية؛ كلما زادت الكثافة زاد الامتصاص."
+                    },
+                    {
+                        question: "Air in the lungs appears black due to its:",
+                        translation: "الهواء بالرئة يطلع أسود بسبب:",
+                        options: ["High density", "Minimal absorption", "High atomic number", "Reflection of photons"],
+                        correct: 1,
+                        explanation: "بسبب الامتصاص الضعيف جداً للأشعة."
+                    },
+                    {
+                        question: "Muscle and Liver typically appear as:",
+                        translation: "العضلات والكبد عادةً يطلع لونها:",
+                        options: ["Intense white", "Pure black", "Light gray", "Invisible"],
+                        correct: 2,
+                        explanation: "تطلع باللون الرمادي الفاتح (Light gray)."
+                    },
+                    {
+                        question: "Metal implants appear bright white because they have:",
+                        translation: "البلاتين (المعدن) يطلع أبيض يلمع لأن عنده:",
+                        options: ["Low density", "Extremely high density", "High transparency", "Low atomic number"],
+                        correct: 1,
+                        explanation: "لأن المعادن كثافتها وعددها الذري عالي جداً."
+                    },
+                    {
+                        question: "Which combination leads to 'Strong Absorption' and a white appearance?",
+                        translation: "يا دمج يسوي 'امتصاص قوي' ويطلع لون أبيض؟",
+                        options: ["Low Z + Low Density", "Moderate Z + Moderate Density", "High Z + High Density", "High Z + Low Density"],
+                        correct: 2,
+                        explanation: "من يكون العدد الذري عالي والكثافة عالية، يكون الامتصاص قوي."
+                    },
+                    {
+                        question: "Without differential absorption, all tissues in a radiographic image would:",
+                        translation: "بدون الامتصاص التفاضلي، كل الأنسجة بالصورة راح:",
+                        options: ["Appear clearer", "Have better contrast", "Look the same", "Turn bright white"],
+                        correct: 2,
+                        explanation: "راح تطلع كلها نفس اللون وما نميز بيناتها."
+                    },
+                    {
+                        question: "The relationship between absorption and patient dose is:",
+                        translation: "العلاقة بين الامتصاص والجرعة الإشعاعية للمريض:",
+                        options: ["Higher absorption = higher dose", "Higher absorption = lower dose", "No relationship", "Absorption only affects detector"],
+                        correct: 0,
+                        explanation: "كلما زاد الامتصاص بالجسم، زادت الجرعة اللي يتلقاها المريض."
+                    },
+                    {
+                        question: "What is used to balance image clarity with minimizing radiation exposure?",
+                        translation: "شنو نستخدم حتى نوازن بين وضوح الصورة وتقليل الإشعاع؟",
+                        options: ["Only increasing distance", "Adjusting kVp and mAs", "Removing all filters", "Using a stationary anode"],
+                        correct: 1,
+                        explanation: "نوازن عن طريق ضبط قيم الـ kVp والـ mAs."
+                    },
+                    {
+                        question: "Filtration and collimation are used in radiography to:",
+                        translation: "الفلترة والتحديد (Collimation) نستخدمها حتى:",
+                        options: ["Increase unnecessary dose", "Reduce unnecessary dose while preserving quality", "Eliminate differential absorption", "Make all black"],
+                        correct: 1,
+                        explanation: "حتى نقلل الجرعة الزايدة مع الحفاظ على جودة الصورة."
+                    },
+                    {
+                        question: "In the gradient scale of an image detector, 'Medium absorption' is represented by:",
+                        translation: "بالتدرج اللوني، الامتصاص المتوسط يطلع بيا لون؟",
+                        options: ["White", "Gray", "Black", "Bright white"],
+                        correct: 1,
+                        explanation: "اللون الرمادي يمثل الامتصاص المتوسط."
+                    },
+                    {
+                        question: "Which of the following is an example of 'Low absorption' appearing black/dark?",
+                        translation: "يا هو من ذني امتصاصه واطئ ويطلع أسود/طوخ؟",
+                        options: ["Air and Fat", "Bone and Metal", "Muscle and Organs", "Iline and Barium"],
+                        correct: 0,
+                        explanation: "الهواء والشحم امتصاصهم ضعيف فيطلعون أطوخ من البقية."
+                    },
+                    {
+                        question: "In the 'Patient Silhouette' concept, high absorption tissues (bone) result in:",
+                        translation: "بمفهوم خيال المريض، الأنسجة عالية الامتصاص (العظم) تؤدي لـ:",
+                        options: ["More dose deposited locally", "Less dose deposited locally", "No dose deposition", "Photon acceleration"],
+                        correct: 0,
+                        explanation: "تؤدي لترسب كمية أكبر من الجرعة الإشعاعية بهذا المكان."
+                    },
+                    {
+                        question: "The appearance of 'Lungs' on a chest X-ray is primarily due to:",
+                        translation: "ظهور 'الرئتين' بصورة أشعة الصدر يعود أساساً لـ:",
+                        options: ["High calcium", "Low density of air", "High Z number of oxygen", "Metal presence"],
+                        correct: 1,
+                        explanation: "بسبب الكثافة الواطئة جداً للهواء داخل الرئة."
+                    },
+                    {
+                        question: "Differential absorption is essential for:",
+                        translation: "الامتصاص التفاضلي ضروري جداً لـ:",
+                        options: ["Only patient safety", "Only tube cooling", "Image Quality (Contrast)", "Increasing photon speed"],
+                        correct: 2,
+                        explanation: "ضروري حتى نحصل جودة صورة (تباين) ونشوف التفاصيل."
+                    },
+                    {
+                        question: "Why does 'Fat' appear as dark gray on a radiographic image?",
+                        translation: "ليش 'الشحم' يطلع رمادي طوخ بالصورة؟",
+                        options: ["High Z and High Density", "Absorbs all photons", "Low Z and Low Density, leading to weak absorption", "Presence of calcium"],
+                        correct: 2,
+                        explanation: "لأن وزنه الذري وكثافته قليلة، فامتصاصه للأشعة يكون ضعيف."
+                    }
+      
+                ]
+            },
+            {
+                id: 8,
+                title: "",
+                icon: "8️⃣",
+                questions: [
+    {
+        question: "Quality Assurance (QA) of exposure parameters includes the systematic checking of which settings?",
+        translation: "ضمان الجودة (QA) لعوامل التعريض يتضمن الفحص المنظم لآيا إعدادات؟",
+        options: ["Only room temperature", "Film storage", "kVp, mA, exposure time, filtration, and distance", "Patient height"],
+        correct: 2,
+        explanation: "الـ QA يشمل فحص كل العوامل اللي تأثر على جودة الصورة والجرعة مثل الـ kVp والـ mA والوقت والفلترة والمسافة."
+    },
+    {
+        question: "The goal of QA in radiological imaging is to guarantee image quality while:",
+        translation: "شنو الهدف من الـ QA بالتصوير الشعاعي؟",
+        options: ["Increasing tube heat", "Doubling exposure time", "Minimizing patient radiation dose", "Ignoring standards"],
+        correct: 2,
+        explanation: "الهدف هو نحصل أحسن صورة بأقل جرعة إشعاعية ممكنة للمريض."
+    },
+    {
+        question: "Which QA procedure is performed when equipment is first installed?",
+        translation: "يا إجراء QA نسويه أول ما ينشد الجهاز الجديد؟",
+        options: ["Routine QA", "Acceptance Testing", "Annual QA", "Corrective Action"],
+        correct: 1,
+        explanation: "اختبار القبول (Acceptance Testing) هو أول فحص للتأكد أن الجهاز يطابق المواصفات المطلوبة."
+    },
+    {
+        question: "What is the risk of 'Underexposure' if QA is neglected?",
+        translation: "شنو خطر 'التعريض الضعيف' (Underexposure) إذا أهملنا الـ QA؟",
+        options: ["Increased cancer risk", "Leads to repeat exams", "Better image clarity", "Higher reliability"],
+        correct: 1,
+        explanation: "التعريض الضعيف يخلي الصورة مو واضحة، فنضطر نعيد الفحص ونزيد الإشعاع على المريض."
+    },
+    {
+        question: "International standards for radiological safety are set by organizations such as:",
+        translation: "المنظمات اللي تحط معايير السلامة الإشعاعية الدولية هي:",
+        options: ["NASA", "IAEA and AERB", "UNESCO", "ISO only"],
+        correct: 1,
+        explanation: "الوكالة الدولية للطاقة الذرية (IAEA) هي المسؤولة عن هاي المعايير."
+    },
+    {
+        question: "Which QA procedure involves daily or weekly checks of exposure reproducibility?",
+        translation: "يا إجراء QA يتضمن فحوصات يومية أو أسبوعية؟",
+        options: ["Annual QA", "Routine QA", "Acceptance Testing", "Corrective Actions"],
+        correct: 1,
+        explanation: "الـ Routine QA هي الفحوصات الدورية اللي نسويها باستمرار للتأكد من ثبات الأداء."
+    },
+    {
+        question: "'Annual QA' includes comprehensive testing of which parameters?",
+        translation: "الـ 'QA السنوي' يشمل فحص شامل لشنو؟",
+        options: ["Room cleanliness", "Patient registration", "kVp accuracy, HVL, timer precision, and output linearity", "Daily density"],
+        correct: 2,
+        explanation: "الفحص السنوي يكون معمق ويشمل دقة الـ kVp والـ HVL والتايمر والخطية."
+    },
+    {
+        question: "According to QA procedures, calibration and servicing are categorized under:",
+        translation: "المعايرة والصيانة تتبع يا تصنيف بالـ QA؟",
+        options: ["Routine QA", "Acceptance Testing", "Daily checks", "Corrective Actions"],
+        correct: 3,
+        explanation: "تعتبر إجراءات تصحيحية (Corrective Actions) نلجأ لها من نكتشف خلل بالجهاز."
+    },
+    {
+        question: "X-ray Tube Output is commonly expressed as:",
+        translation: "مخرجات أنبوب الأشعة عادةً شلون تنقاس؟",
+        options: ["kVp per second", "mGy/mAs at a fixed distance", "Watts per hour", "Meters per minute"],
+        correct: 1,
+        explanation: "تنقاس بالميلي كراي لكل (mAs) على مسافة معينة."
+    },
+    {
+        question: "X-ray output is approximately proportional to:",
+        translation: "مخرجات الأشعة تتناسب تقريباً ويه شنو؟",
+        options: ["Distance", "kVp²", "Filtration thickness", "1/mA"],
+        correct: 1,
+        explanation: "المخرجات تتناسب طردياً ويه مربع الـ kVp."
+    },
+    {
+        question: "Higher kVp results in a beam that is:",
+        translation: "الـ kVp العالي ينتج حزمة أشعة بشنو تتميز؟",
+        options: ["Less penetrating", "More penetrating with lower image contrast", "Purely characteristic", "Blocked by glass"],
+        correct: 1,
+        explanation: "تكون أكثر قدرة على الاختراق بس التباين (Contrast) بالصورة يقل."
+    },
+    {
+        question: "The role of Milliampere (mA) is to control:",
+        translation: "وظيفة الـ mA هي التحكم بشنو؟",
+        options: ["The energy of photons", "The number of photons produced", "The penetrating ability", "Film speed"],
+        correct: 1,
+        explanation: "الـ mA يتحكم بعدد (كمية) الفوتونات المنتجة."
+    },
+    {
+        question: "Doubling the mA will:",
+        translation: "إذا ضاعفنا الـ mA شنو يصير؟",
+        options: ["Double photon energy", "Double photon quantity", "Triple patient dose", "Reduce output half"],
+        correct: 1,
+        explanation: "تتضاعف كمية الأشعة المنتجة بالضبط."
+    },
+    {
+        question: "Automatic Exposure Control (AEC) terminates exposure when:",
+        translation: "جهاز الـ AEC يقطع الأشعة شوكت؟",
+        options: ["Timer reaches 1 min", "Anode starts melting", "Detector receives the required radiation", "Patient moves"],
+        correct: 2,
+        explanation: "يقطعها أول ما يوصل الكاشف للكمية المطلوبة من الإشعاع للصورة."
+    },
+    {
+        question: "The main benefit of AEC is to:",
+        translation: "الفائدة الأساسية من الـ AEC هي:",
+        options: ["Increase focal spot", "Ensure consistent image quality and prevent unnecessary exposure", "Increase mA", "Replace kVp"],
+        correct: 1,
+        explanation: "يضمن جودة صورة ثابتة ويحمي المريض من الإشعاع الزايد."
+    },
+    {
+        question: "Filtration increases the average beam energy, a process known as:",
+        translation: "الفلترة تزيد معدل طاقة الحزمة، وهاي العملية تسمى:",
+        options: ["Beam softening", "Beam hardening", "Photoelectric effect", "Compton scattering"],
+        correct: 1,
+        explanation: "تسمى 'تصليد الحزمة' (Beam hardening) لأنها تشيل الأشعة الضعيفة."
+    },
+    {
+        question: "Which focal spot size provides higher spatial resolution?",
+        translation: "يا حجم بؤرة يعطي دقة تفاصيل (Resolution) أعلى؟",
+        options: ["Small focal spot", "Large focal spot", "Round focal spot", "No effect"],
+        correct: 0,
+        explanation: "البؤرة الصغيرة تعطي صورة أوضح وأدق بالتفاصيل."
+    },
+    {
+        question: "The disadvantage of a small focal spot is:",
+        translation: "شنو عيب البؤرة الصغيرة؟",
+        options: ["Poor image contrast", "High patient dose", "Less heat capacity", "Increased scatter"],
+        correct: 2,
+        explanation: "عيبها إنها ما تتحمل حرارة عالية (ممكن تذوب بسرعة)."
+    },
+    {
+        question: "The purpose of the Tube Output Consistency test is to ensure:",
+        translation: "الغرض من اختبار استمرارية مخرجات الأنبوب هو التأكد من:",
+        options: ["High kVp", "Reproducible radiation dose", "Constant temperature", "Faster processing"],
+        correct: 1,
+        explanation: "التأكد أن الجهاز يعطي نفس الجرعة كل مرة نستخدم نفس الإعدادات."
+    },
+    {
+        question: "What is the acceptable tolerance for Tube Output Consistency?",
+        translation: "شكد السماحية المسموحة باستمرارية المخرجات؟",
+        options: ["±10%", "±5%", "Coefficient of variation ≤ 0.05", "±20%"],
+        correct: 2,
+        explanation: "لازم يكون معامل الاختلاف (COV) أقل أو يساوي 0.05."
+    },
+    {
+        question: "The kVp Accuracy Test confirms that beam energy matches the set value with a tolerance of:",
+        translation: "اختبار دقة الـ kVp يتأكد من مطابقة القيمة بسماحية شكد؟",
+        options: ["±1%", "±5%", "±10%", "±2%"],
+        correct: 1,
+        explanation: "الخطأ المسموح بيه بدقة الـ kVp هو ±5%."
+    },
+    {
+        question: "mA Linearity Test checks if the dose is proportional to mA with a tolerance of:",
+        translation: "اختبار خطية الـ mA يتأكد من التناسب بسماحية شكد؟",
+        options: ["±5%", "±10%", "±15%", "±1%"],
+        correct: 1,
+        explanation: "السماحية بخطية الـ mA هي ±10%."
+    },
+    {
+        question: "Exposure Timer Accuracy is tested using:",
+        translation: "دقة مؤقت التعريض شلون نفحصها؟",
+        options: ["Aluminum filters", "Electronic timer or dosimeter", "Pinhole camera", "Star pattern"],
+        correct: 1,
+        explanation: "نستخدم مؤقت إلكتروني أو جهاز قياس الجرعة."
+    },
+    {
+        question: "Half-Value Layer (HVL) test is used to assess:",
+        translation: "اختبار الـ HVL يستخدم لتقييم شنو؟",
+        options: ["Focal spot size", "Beam quality and filtration", "Exposure time", "Mechanical alignment"],
+        correct: 1,
+        explanation: "يستخدم لتقييم جودة الحزمة وكفاءة الفلترة."
+    },
+    {
+        question: "What tool is used to measure the Focal Spot Size?",
+        translation: "يا أداة نستخدمها لقياس حجم البؤرة؟",
+        options: ["Dosimeter", "kVp meter", "Pinhole camera or star pattern", "Aluminum filters"],
+        correct: 2,
+        explanation: "كاميرا الثقب (Pinhole) أو نمط النجمة (Star pattern) هي الأدوات المخصصة لهذا الفحص."
+    },
+    {
+        question: "Collimation & Alignment tolerance must be:",
+        translation: "السماحية بمحاذاة الحزمة لازم تكون:",
+        options: ["±5%", "Misalignment ≤ 2% of SID", "±10%", "Equal to focal spot"],
+        correct: 1,
+        explanation: "لازم الخطأ بالمحاذاة ما يعبر 2% من المسافة الكلية (SID)."
+    },
+    {
+        question: "Testing Output vs. Distance confirms the:",
+        translation: "اختبار المخرجات ويه المسافة يثبت يا قانون؟",
+        options: ["mA Linearity", "Inverse Square Law", "Film speed", "AEC accuracy"],
+        correct: 1,
+        explanation: "يثبت قانون التربيع العكسي."
+    },
+    {
+        question: "Comprehensive QA including HVL and focal spot should be performed:",
+        translation: "الـ QA الشامل (HVL والبؤرة) لازم نسويه كل شكد؟",
+        options: ["Daily", "Weekly", "Monthly", "Annually"],
+        correct: 3,
+        explanation: "هاي الفحوصات المعقدة تُجرى سنوياً (Annually)."
+    },
+    {
+        question: "Basic checks like output reproducibility and AEC performance are done:",
+        translation: "الفحوصات الأساسية (الاستمرارية والـ AEC) تسويها كل شكد؟",
+        options: ["Daily/Weekly", "Every 5 years", "Only during installation", "When the tube breaks"],
+        correct: 0,
+        explanation: "هاي الفحوصات لازم تكون دورية (يومياً أو أسبوعياً)."
+    },
+    {
+        question: "Film speed in radiography is the efficiency of:",
+        translation: "سرعة الفيلم بالأشعة هي مقياس لكفاءة شنو؟",
+        options: ["Exposure and processing", "X-ray production", "Cooling the tube", "The grid ratio"],
+        correct: 0,
+        explanation: "سرعة الفيلم تعني كفاءة الاستجابة للتعريض الإشعاعي وعملية التحميض."
+    },
+    {
+        question: "The standard developer temperature in automatic processors is:",
+        translation: "درجة حرارة المظهر (Developer) القياسية بالمحمض الآلي هي:",
+        options: ["20-25 °C", "33-35 °C", "50-60 °C", "0 °C"],
+        correct: 1,
+        explanation: "المحمض الآلي يحتاج حرارة عالية (33-35 درجة مئوية) حتى يشتغل بسرعة."
+    },
+    {
+        question: "What is the cycle time for Standard automatic processor?",
+        translation: "شكد وقت الدورة بالمحمض الآلي القياسي (Standard)؟",
+        options: ["10 seconds", "45-60 seconds", "90-120 seconds", "5-6 minutes"],
+        correct: 2,
+        explanation: "وقت الدورة القياسي يتراوح بين دقيقة ونص إلى دقيقتين."
+    },
+    {
+        question: "Manual tank processing cycle time is usually:",
+        translation: "وقت دورة التحميض اليدوي (بالتانكي) عادة يكون:",
+        options: ["90 seconds", "2 minutes", "5-6 minutes", "1 hour"],
+        correct: 2,
+        explanation: "التحميض اليدوي يطول هواية، بحدود 5-6 دقائق."
+    },
+    {
+        question: "Which processor type is highly dependent on operator skill?",
+        translation: "يا نوع من المحمضات يعتمد هواية على مهارة الشخص اللي يشغله؟",
+        options: ["Automatic rapid", "Manual tank processing", "Dental film processor", "Standard automatic"],
+        correct: 1,
+        explanation: "التحميض اليدوي يعتمد كلياً على دقة ومهارة التقني."
+    },
+    {
+        question: "A higher developer temperature leads to:",
+        translation: "درجة حرارة المظهر العالية تؤدي إلى:",
+        options: ["Faster processing, but risk of fogging", "Slower processing", "No image", "Better fixing"],
+        correct: 0,
+        explanation: "تسرع العملية بس ممكن تسوي ضبابية (Fog) بالفيلم وتخرب جودته."
+    },
+    {
+        question: "Chemical activity in the processor depends on:",
+        translation: "النشاط الكيميائي بالمحمض يعتمد على شنو؟",
+        options: ["The kVp used", "Fresh vs. exhausted developer/fixer", "The focal spot size", "The room lighting"],
+        correct: 1,
+        explanation: "يعتمد على حداثة المواد الكيميائية ونظافتها (تعبانة لو جديدة)."
+    },
+    {
+        question: "Fast films require:",
+        translation: "الأفلام السريعة (Fast films) تحتاج شنو؟",
+        options: ["Less exposure and shorter processing", "More radiation dose", "Higher kVp only", "Manual processing only"],
+        correct: 0,
+        explanation: "تحتاج جرعة إشعاع أقل ووقت تحميض أقصر."
+    },
+    {
+        question: "The risk of a processing speed that is 'Too Fast' is:",
+        translation: "شنو خطر سرعة التحميض إذا كانت 'سريعة بزيادة'؟",
+        options: ["Over density", "Poor contrast and incomplete development", "Stains on the film", "Excessive dose"],
+        correct: 1,
+        explanation: "تطلع الصورة بتباين ضعيف (Poor contrast) والتحميض يكون ناقص."
+    },
+    {
+        question: "Inconsistent processor speed leads to:",
+        translation: "عدم استقرار سرعة المحمض يؤدي إلى:",
+        options: ["Better diagnostics", "Unreliable image quality", "Lower cancer risk", "Fixed kVp settings"],
+        correct: 1,
+        explanation: "يخلي جودة الصور متغيرة وغير موثوقة للتشخيص."
+    },
+    {
+        question: "For quality assurance in film processing, best practices include:",
+        translation: "لضمان الجودة بالتحميض، أحسن ممارسة هي:",
+        options: ["Changing chemicals every year", "Cleaning and replenishing chemicals daily", "Keeping temp at 20 °C", "Using old films"],
+        correct: 1,
+        explanation: "لازم تنظيف وتعويض المواد الكيميائية بشكل يومي."
+    },
+    {
+        question: "QA test films are used to ensure:",
+        translation: "أفلام فحص الـ QA نستخدمها للتأكد من شنو؟",
+        options: ["Patient alignment", "Consistency in processing", "Tube output", "Distance accuracy"],
+        correct: 1,
+        explanation: "تستخدم للتأكد من ثبات واستمرارية كفاءة عملية التحميض."
+    },
+    {
+        question: "Why does QA reduce downtime and repair costs?",
+        translation: "ليش الـ QA يقلل وقت التوقف وتكاليف التصليح؟",
+        options: ["Detecting faults early", "Increasing voltage", "Manual processing", "Avoiding standards"],
+        correct: 0,
+        explanation: "لأن الـ QA يخلينا نكتشف المشاكل البسيطة قبل ما تخرب الجهاز كلياً."
+    },
+    {
+        question: "The 'Coefficient of Variation' is a measurement used in which test?",
+        translation: "معامل الاختلاف (COV) يستخدم بيا فحص؟",
+        options: ["kVp accuracy", "Tube output consistency", "Focal spot size", "Film speed"],
+        correct: 1,
+        explanation: "يستخدم بفحص استمرارية مخرجات الأنبوبة (Consistency)."
+    },
+    {
+        question: "Which factor reduces skin dose by removing low-energy photons?",
+        translation: "يا عامل يقلل جرعة الجلد عن طريق إزالة الفوتونات الضعيفة؟",
+        options: ["AEC", "Small focal spot", "Filtration", "Higher mA"],
+        correct: 2,
+        explanation: "الفلترة (Filtration) هي اللي تحمي جلد المريض من الإشعاع الناعم الضعيف."
+    },
+    {
+        question: "Acceptable tolerance for AEC variation is:",
+        translation: "السماحية المسموح بيها باختلاف الـ AEC هي:",
+        options: ["±5%", "±10% variation", "±2%", "Zero variation"],
+        correct: 1,
+        explanation: "مسموح باختلاف يصل إلى ±10%."
+    },
+    {
+        question: "What happens if transport speed is Faster = shorter cycle?",
+        translation: "شنو يصير إذا سرعة النقل صارت أسرع (دورة أقصر)؟",
+        options: ["Overexposure", "Poor fixing and washing", "Higher density", "Beam hardening"],
+        correct: 1,
+        explanation: "الفيلم ما يلحق يتثبت ولا ينغسل زين، فيطلع رطب ومو نظيف."
+    },
+    {
+        question: "Which QA test ensures and verifies exposure duration?",
+        translation: "يا فحص QA يتأكد من دقة مدة التعريض؟",
+        options: ["mA Linearity", "HVL", "Collimation", "Exposure Timer Accuracy"],
+        correct: 3,
+        explanation: "فحص دقة مؤقت التعريض (Timer Accuracy)."
+    },
+    {
+        question: "In film processing, what is the risk of speed being 'Too Slow'?",
+        translation: "شنو خطر سرعة التحميض إذا كانت 'كلش بطيئة'؟",
+        options: ["Incomplete development", "Over density, stains, and workflow delays", "Increased resolution", "Reduction in dose"],
+        correct: 1,
+        explanation: "تطلع الصورة سودة زيادة (Over density) وتتأخر مواعيد المرضى."
+    },
+    {
+        question: "Which factor defines the amount of radiation produced per unit of exposure?",
+        translation: "يا عامل يعرف كمية الإشعاع المنتجة لكل وحدة تعريض؟",
+        options: ["Focal spot size", "X-ray Tube Output", "AEC", "Film speed"],
+        correct: 1,
+        explanation: "هذا هو تعريف مخرجات أنبوب الأشعة (X-ray Tube Output)."
+    },
+    {
+        question: "Which test confirms that beam energy matches the set value?",
+        translation: "يا فحص يتأكد أن طاقة الحزمة تطابق القيمة المختارة بالجهاز؟",
+        options: ["Tube Output Consistency", "kVp Accuracy Test", "HVL", "Exposure Timer"],
+        correct: 1,
+        explanation: "اختبار دقة الـ kVp."
+    },
+    {
+        question: "The purpose of the 'Half-Value Layer (HVL)' test is to assess:",
+        translation: "الغرض من اختبار طبقة القيمة النصفية (HVL) هو تقييم:",
+        options: ["Exposure precision", "Dose with mA", "Beam quality and filtration", "Spatial resolution"],
+        correct: 2,
+        explanation: "الـ HVL يقيم جودة الحزمة وكفاءة الفلترة."
+    },
+    {
+        question: "How often should 'kVp Accuracy' and 'Timer Precision' be checked?",
+        translation: "كل شكد لازم نفحص دقة الـ kVp والتايمر؟",
+        options: ["Daily", "Weekly", "Monthly or Quarterly", "Only at installation"],
+        correct: 2,
+        explanation: "الفحص يكون شهري أو فصلي (كل 3 أشهر)."
+    },
+    {
+        question: "Which method is 'Common in diagnostic radiology; consistent quality'?",
+        translation: "يا طريقة تمتاز بأنها شائعة وتعطي جودة ثابتة؟",
+        options: ["Automatic rapid", "Automatic (standard) processing", "Manual tank", "Digital radiography"],
+        correct: 1,
+        explanation: "التحميض الآلي القياسي (Standard) هو الأكثر شيوعاً واستقراراً."
+    }
+     
+                ]
+           
+            },
+            {
+                id: 9,
+                title: "الأسئلة الذهبية",
+                icon: "⭐",
+                questions: [
+                   {
+        question: "Approximately what percentage of X-rays are produced by bremsstrahlung radiation?",
+        translation: "تقريباً شكد النسبة المئوية للأشعة السينية اللي تنتج عن طريق إشعاع الكبح (Bremsstrahlung)؟",
+        options: ["20%", "50%", "80%"],
+        correct: 2,
+        explanation: "الأغلبية العظمى من الأشعة السينية (حوالي 80-90%) هي إشعاع كبح."
+    },
+    {
+        question: "Which material is often used as the target in mammography?",
+        translation: "يا مادة تستخدم عادةً كهدف (Target) بجهاز السونار (Mammography)؟",
+        options: ["Tungsten", "Molybdenum", "Copper"],
+        correct: 1,
+        explanation: "الموليبدينوم يستخدم بالماموكرافي لأن ينتج أشعة واطئة الطاقة تناسب تصوير الأنسجة الرخوة."
+    },
+    {
+        question: "Characteristic radiation depends mainly on:",
+        translation: "الأشعة المميزة (Characteristic) تعتمد بشكل أساسي على شنو؟",
+        options: ["Tube voltage (kVp)", "Anode material", "Filament current"],
+        correct: 1,
+        explanation: "تعتمد على نوع مادة الأنود (الهدف) لأن كل مادة الها طاقات ربط محددة."
+    },
+    {
+        question: "What is the main advantage of a rotating anode compared to a stationary anode?",
+        translation: "شنو الفائدة الأساسية للأنود الدوار مقارنة بالثابت؟",
+        options: ["Simpler design", "Better heat dissipation and higher tube currents", "Low-energy photons"],
+        correct: 1,
+        explanation: "الأنود الدوار يوزع الحرارة بشكل أحسن، فيسمح بمرور تيارات عالية بدون ما يذوب."
+    },
+    {
+        question: "Which feature of the rotating anode helps improve heat dissipation?",
+        translation: "يا ميزة بالأنود الدوار تساعد على تحسين تصريف الحرارة؟",
+        options: ["Smaller focal spot size", "Stationary target surface", "Continuous rotation of the anode disk", "Low melting point materials"],
+        correct: 2,
+        explanation: "الدوران المستمر للقرص يخلي الحرارة تتوزع على مساحة أكبر."
+    },
+    {
+        question: "What is the main reason for using filters in X-ray tubes?",
+        translation: "شنو السبب الرئيسي لاستخدام الفلاتر بأنبوب الأشعة؟",
+        options: ["Remove low-energy photons that increase dose", "Generate characteristic radiation", "Increase photon number"],
+        correct: 0,
+        explanation: "الفلتر يشيل الفوتونات الضعيفة اللي ما تخترق الجسم بس تزيد الجرعة على جلد المريض."
+    },
+    {
+        question: "Beam quality in X-rays refers to:",
+        translation: "جودة الحزمة (Beam quality) بالأشعة تشير إلى شنو؟",
+        options: ["Number of photons", "The penetrating ability of the beam", "Image brightness"],
+        correct: 1,
+        explanation: "الجودة تعني 'قوة الاختراق'، وكلما زادت الطاقة زادت الجودة."
+    },
+    {
+        question: "Which factor primarily increases average energy while reducing low-energy photons?",
+        translation: "يا عامل يزيد معدل طاقة الحزمة ويقلل الفوتونات الضعيفة؟",
+        options: ["Applying filtration", "High-frequency generator", "Increasing tube current (mA)", "Changing anode material"],
+        correct: 0,
+        explanation: "الفلترة (Filtration) هي اللي ترفع معدل الطاقة عن طريق تصفية الضعيف منها."
+    },
+    {
+        question: "Which method reduces scatter by absorbing angled photons while allowing straight photons to pass?",
+        translation: "يا طريقة تقلل التشتت عن طريق امتصاص الفوتونات المائلة وتسمح للعدلة بالمرور؟",
+        options: ["Collimation", "Grid", "Air gap technique"],
+        correct: 1,
+        explanation: "الشبكة (Grid) تمتص الأشعة المشتتة وتحسن تباين الصورة."
+    },
+    {
+        question: "What is the main disadvantage of scatter radiation in radiography?",
+        translation: "شنو العيب الأساسي للأشعة المشتتة (Scatter) بالتصوير؟",
+        options: ["Increases sharpness", "Reduces image contrast by blurring boundaries", "Decreases patient dose"],
+        correct: 1,
+        explanation: "التشتت يسوي 'ضبابية' بالصورة ويقلل التباين (Contrast)."
+    },
+    {
+        question: "Which technique is preferred for imaging a thick body part like the abdomen?",
+        translation: "يا تقنية نفضلها من نصور جزء سميك مثل البطن؟",
+        options: ["No Grid", "Using a Grid", "Low kVp only"],
+        correct: 1,
+        explanation: "بالأجزاء السميكة نستخدم الـ Grid حتى نتخلص من التشتت الهواية الناتج عن سمك الجسم."
+    },
+    {
+        question: "Which cooling method is most efficient in high-performance CT scanners?",
+        translation: "يا طريقة تبريد هي الأكثر كفاءة بأجهزة الـ CT الحديثة؟",
+        options: ["Oil cooling", "Water cooling", "Air cooling"],
+        correct: 0,
+        explanation: "تبريد الزيت (Oil cooling) هو الأكثر استخداماً وكفاءة بالأجهزة القوية."
+    },
+    {
+        question: "X-ray fluorescence (XRF) is mainly used for:",
+        translation: "ظاهرة الفلورة الإشعاعية (XRF) تستخدم بشكل أساسي لشنو؟",
+        options: ["Elemental analysis", "Producing continuous spectra", "Reducing patient dose"],
+        correct: 0,
+        explanation: "تستخدم بالتحليل الكيميائي للعناصر في الجيولوجيا والمعادن."
+    },
+    {
+        question: "Which feature distinguishes X-ray phosphorescence from fluorescence?",
+        translation: "شنو اللي يميز 'الفسفرة' عن 'الفلورة' بالأشعة؟",
+        options: ["Occurs instantly", "Delayed emission due to metastable states", "Continuous Bremsstrahlung"],
+        correct: 1,
+        explanation: "الفسفرة يكون بيها انبعاث متأخر للضوء (تألق مستمر بعد قطع الأشعة)."
+    },
+    {
+        question: "Which contrast medium is most effective for vascular imaging?",
+        translation: "يا مادة تباين (صبغة) هي الأكثر فعالية لتصوير الأوعية الدموية؟",
+        options: ["Calcium", "Iodine", "Barium"],
+        correct: 1,
+        explanation: "اليود (Iodine) هو المستخدم بكثرة لتصوير الشرايين والأوردة."
+    }
+                ]
+            }
+        ];
+
+        let currentLecture = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let showTranslation = false;
+        let isDarkMode = false;
+
+        function preventCopyPaste() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+            document.addEventListener('paste', e => e.preventDefault());
+            document.addEventListener('selectstart', e => e.preventDefault());
+            
+            document.addEventListener('keydown', e => {
+                if (
+                    (e.ctrlKey || e.metaKey) && 
+                    ['c', 'x', 'a', 'u', 's'].includes(e.key.toLowerCase())
+                ) {
+                    e.preventDefault();
+                }
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function renderLectures() {
+            const grid = document.getElementById('lectureGrid');
+            grid.innerHTML = lectures.map(lecture => `
+                <div class="lecture-card" onclick="startQuiz(${lecture.id})">
+                    <div class="lecture-icon">${lecture.icon}</div>
+                    <div class="lecture-number">المحاضرة ${lecture.id}</div>
+                    <div class="lecture-title">${lecture.title}</div>
+                </div>
+            `).join('');
+        }
+
+        function startQuiz(lectureId) {
+            currentLecture = lectures.find(l => l.id === lectureId);
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            document.getElementById('lectureSelection').classList.add('hidden');
+            document.getElementById('quizSection').classList.remove('hidden');
+            document.getElementById('quizTitle').textContent = currentLecture.title;
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = currentLecture.questions[currentQuestionIndex];
+            const questionSection = document.getElementById('questionSection');
+            
+            const progress = ((currentQuestionIndex + 1) / currentLecture.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionCounter').textContent = 
+                `السؤال ${currentQuestionIndex + 1} من ${currentLecture.questions.length}`;
+            
+            showTranslation = false;
+            
+            questionSection.innerHTML = `
+                <div class="question-header">
+                    <div class="question-text">${question.question}</div>
+                    <button class="translate-btn" onclick="toggleTranslation()">🔤 ترجمة</button>
+                </div>
+                <div id="translationContainer"></div>
+                <div class="options-container">
+                    ${question.options.map((option, index) => `
+                        <button class="option-btn" onclick="selectAnswer(${index})">${option}</button>
+                    `).join('')}
+                </div>
+                <div id="feedbackContainer"></div>
+            `;
+        }
+
+        function toggleTranslation() {
+            showTranslation = !showTranslation;
+            const container = document.getElementById('translationContainer');
+            const question = currentLecture.questions[currentQuestionIndex];
+            
+            if (showTranslation) {
+                container.innerHTML = `<div class="translation">${question.translation}</div>`;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = currentLecture.questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                }
+                if (index === selectedIndex && index !== question.correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            const isCorrect = selectedIndex === question.correct;
+            
+            if (isCorrect) {
+                score++;
+                setTimeout(() => {
+                    nextQuestion();
+                }, 800);
+            } else {
+                feedbackContainer.innerHTML = `
+                    <div class="feedback-box error">
+                        ${question.explanation}
+                    </div>
+                    <button class="next-btn" onclick="nextQuestion()">التالي</button>
+                `;
+            }
+            
+            userAnswers.push({
+                question: question.question,
+                userAnswer: question.options[selectedIndex],
+                correctAnswer: question.options[question.correct],
+                isCorrect: isCorrect
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < currentLecture.questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = Math.floor(start + range * easeOutQuart);
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        function showResults() {
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            const totalQuestions = currentLecture.questions.length;
+            const wrongAnswers = totalQuestions - score;
+            const percentage = (score / totalQuestions) * 100;
+            
+            const scoreElement = document.getElementById('finalScore');
+            const messageElement = document.getElementById('resultsMessage');
+            const badgeElement = document.getElementById('performanceBadge');
+            const progressRing = document.getElementById('progressRing');
+            
+            animateValue(document.getElementById('correctAnswers'), 0, score, 1500);
+            animateValue(document.getElementById('wrongAnswers'), 0, wrongAnswers, 1500);
+            animateValue(document.getElementById('totalQuestions'), 0, totalQuestions, 1500);
+            
+            let currentPercentage = 0;
+            const percentageInterval = setInterval(() => {
+                currentPercentage += 1;
+                scoreElement.textContent = `${currentPercentage}%`;
+                
+                if (currentPercentage >= percentage) {
+                    clearInterval(percentageInterval);
+                    scoreElement.textContent = `${percentage.toFixed(0)}%`;
+                }
+            }, 20);
+            
+            const circumference = 2 * Math.PI * 85;
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            setTimeout(() => {
+                progressRing.style.strokeDashoffset = offset;
+            }, 100);
+            
+            if (percentage < 50) {
+                scoreElement.className = 'results-score fail';
+                progressRing.className = 'progress-ring fail';
+                badgeElement.className = 'performance-badge badge-fail';
+                badgeElement.textContent = '❌ راسب';
+                messageElement.textContent = 'حاول مرة أخرى! التعلم يحتاج للممارسة المستمرة 💪';
+            } else if (percentage < 90) {
+                scoreElement.className = 'results-score pass';
+                progressRing.className = 'progress-ring pass';
+                badgeElement.className = 'performance-badge badge-pass';
+                badgeElement.textContent = '✅ ناجح';
+                messageElement.textContent = 'أحسنت! أداء جيد، واصل التقدم 👏';
+            } else {
+                scoreElement.className = 'results-score excellent';
+                progressRing.className = 'progress-ring excellent';
+                badgeElement.className = 'performance-badge badge-excellent';
+                badgeElement.textContent = '🌟 متفوق';
+                messageElement.textContent = 'ممتاز! أداء رائع ومتميز 🌟';
+                createConfetti();
+            }
+        }
+
+        function reviewQuiz() {
+            const reviewContainer = document.getElementById('reviewContainer');
+            reviewContainer.classList.toggle('hidden');
+            
+            if (!reviewContainer.classList.contains('hidden')) {
+                reviewContainer.innerHTML = userAnswers.map((answer, index) => `
+                    <div class="review-question">
+                        <div class="review-question-text">Question ${index + 1}: ${answer.question}</div>
+                        ${!answer.isCorrect ? `<div class="review-answer user">Your answer: ${answer.userAnswer}</div>` : ''}
+                        <div class="review-answer correct">Correct answer: ${answer.correctAnswer}</div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('reviewBtn').textContent = 'إخفاء المراجعة';
+            } else {
+                document.getElementById('reviewBtn').textContent = 'مراجعة الاختبار';
+            }
+        }
+
+        function backToLectures() {
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('lectureSelection').classList.remove('hidden');
+            
+            const canvas = document.getElementById('confettiCanvas');
+            if (canvas) canvas.remove();
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            const app = document.getElementById('app');
+            const themeBtn = document.getElementById('themeToggle');
+            
+            if (isDarkMode) {
+                app.classList.remove('light-mode');
+                app.classList.add('dark-mode');
+                themeBtn.textContent = '🌙';
+            } else {
+                app.classList.remove('dark-mode');
+                app.classList.add('light-mode');
+                themeBtn.textContent = '☀️';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function createConfetti() {
+            const canvas = document.createElement('canvas');
+            canvas.id = 'confettiCanvas';
+            canvas.className = 'confetti-canvas';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            document.body.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 150,
+                    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                    tilt: Math.floor(Math.random() * 10) - 10,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+                    tiltAngle: 0
+                });
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach((p, i) => {
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r / 2;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                    ctx.stroke();
+                    
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+                    
+                    if (p.y > canvas.height) {
+                        particles[i] = {
+                            ...p,
+                            x: Math.random() * canvas.width,
+                            y: -30
+                        };
+                    }
+                });
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+            
+            setTimeout(() => {
+                canvas.remove();
+            }, 5000);
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('fullscreenToggle').addEventListener('click', toggleFullscreen);
+        document.getElementById('reviewBtn').addEventListener('click', reviewQuiz);
+        document.getElementById('backToLectures').addEventListener('click', backToLectures);
+
+        async function onConfigChange(config) {
+            document.getElementById('platformTitle').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('subjectName').textContent = config.subject_name || defaultConfig.subject_name;
+            document.getElementById('studentName').textContent = config.student_name || defaultConfig.student_name;
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["platform_title", config.platform_title || defaultConfig.platform_title],
+                    ["subject_name", config.subject_name || defaultConfig.subject_name],
+                    ["student_name", config.student_name || defaultConfig.student_name]
+                ])
+            });
+        }
+
+        preventCopyPaste();
+        renderLectures();
+        onConfigChange(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b0af221946426ad',t:'MTc2NjE4OTczMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
